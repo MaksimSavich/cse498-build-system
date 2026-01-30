@@ -1,4 +1,4 @@
-FROM emscripten/emsdk:latest
+FROM emscripten/emsdk:5.0.0
 
 # Build arguments
 ARG SDL_VERSION=2
@@ -11,15 +11,12 @@ ENV SERVE_PORT=8080
 # Pre-fetch SDL port to speed up first builds
 RUN emcc --use-port=sdl${SDL_VERSION} --check
 
-# Create directories
-RUN mkdir -p /app/src /app/build /app/output
+# Copy entrypoint script and setup directories
+COPY scripts/entrypoint.sh /app/entrypoint.sh
+RUN mkdir -p /app/src /app/build /app/output && chmod +x /app/entrypoint.sh
 
 # Copy demo source code
 COPY src/ /app/src/
-
-# Copy entrypoint script
-COPY scripts/entrypoint.sh /app/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
 
 WORKDIR /app
 
