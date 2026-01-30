@@ -1,6 +1,6 @@
-#include <emscripten.h>
-
 #include "math_utils.hpp"
+
+#include <emscripten.h>
 
 extern "C" {
 
