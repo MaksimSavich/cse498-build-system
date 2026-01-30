@@ -21,7 +21,6 @@ void main_loop() {
   }
 }
 
-// For testing
 int main(int argc, char* argv[]) {
   int sum = add(10, 25);
   console_log_result("add(10, 25)", sum);
