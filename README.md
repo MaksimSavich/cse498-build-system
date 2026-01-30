@@ -1,6 +1,6 @@
 # cse498 Build System
 
-Docker environment for C++ development with Emscripten and SDL3.
+Docker environment for C++ development with Emscripten and SDL2.
 
 ## Quick Start
 
@@ -10,9 +10,9 @@ Docker environment for C++ development with Emscripten and SDL3.
 | Command | Description |
 |---------|-------------|
 | `make build` | Build project, output to `./output` |
+| `make test` | Build and run tests |
 | `make serve` | Build and start emrun web server |
 | `make dev` | Interactive development shell |
-| `make build-sdl2` | Build with SDL2 instead of SDL3 |
 
 ### Docker Compose Usage
 ```bash
@@ -33,7 +33,7 @@ docker compose run --rm dev
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `SDL_VERSION` | `3` | SDL version (2 or 3) |
+| `SDL_VERSION` | `2` | SDL version (2 or 3) |
 | `BUILD_OUTPUT` | `html` | Output format: `html` or `js` |
 | `SERVE_PORT` | `8080` | emrun server port |
 

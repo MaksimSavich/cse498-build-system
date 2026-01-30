@@ -1,8 +1,12 @@
-.PHONY: build serve dev shell clean image rebuild
+.PHONY: build test serve dev shell clean image rebuild
 
 # Build the project
 build:
 	docker compose run --rm build
+
+# Build and run tests
+test:
+	docker compose run --rm test
 
 # Build and serve with web server
 serve:

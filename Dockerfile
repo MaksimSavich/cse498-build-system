@@ -1,7 +1,7 @@
 FROM emscripten/emsdk:latest
 
 # Build arguments
-ARG SDL_VERSION=3
+ARG SDL_VERSION=2
 
 # Environment variables for runtime configuration
 ENV SDL_VERSION=${SDL_VERSION}

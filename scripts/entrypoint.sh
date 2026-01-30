@@ -13,6 +13,7 @@ show_help() {
     echo
     echo "Commands:"
     echo "  build       Build the project (default)"
+    echo "  test        Build and run tests"
     echo "  serve       Build and serve with emrun"
     echo "  clean       Clean build artifacts"
     echo "  shell       Start an interactive shell"
@@ -27,6 +28,7 @@ show_help() {
     echo
     echo "Examples:"
     echo "  docker run --rm -v \$(pwd)/src:/app/src -v \$(pwd)/output:/app/output cse498-companyb-project build"
+    echo "  docker run --rm -v \$(pwd)/src:/app/src -v \$(pwd)/tests:/app/tests cse498-companyb-project test"
     echo "  docker run --rm -p 8080:8080 cse498-companyb-project serve"
     echo "  docker run -it --rm cse498-companyb-project shell"
     echo
@@ -72,6 +74,31 @@ do_serve() {
         "${OUTPUT_DIR}/index.html"
 }
 
+do_test() {
+    echo "==> Building and running tests (Catch2 + Emscripten) <=="
+
+    if [ ! -f "${SOURCE_DIR}/CMakeLists.txt" ]; then
+        echo "Error: No CMakeLists.txt found in ${SOURCE_DIR}"
+        exit 1
+    fi
+
+    local TEST_BUILD_DIR="${BUILD_DIR}/tests"
+    mkdir -p "${TEST_BUILD_DIR}"
+
+    # Configure with emcmake for Emscripten tests
+    emcmake cmake \
+        -S "${SOURCE_DIR}" \
+        -B "${TEST_BUILD_DIR}" \
+        -DBUILD_TESTS=ON
+
+    # Build tests with emmake
+    emmake make -C "${TEST_BUILD_DIR}" -j$(nproc)
+
+    # Run tests with Node.js
+    echo "==> Running tests <=="
+    node "${TEST_BUILD_DIR}/tests.js"
+}
+
 do_clean() {
     echo "==> Cleaning build artifacts <=="
     rm -rf "${BUILD_DIR}"/* "${OUTPUT_DIR}"/*
@@ -81,6 +108,9 @@ do_clean() {
 case "${1:-build}" in
     build)
         do_build
+        ;;
+    test)
+        do_test
         ;;
     serve)
         do_serve
