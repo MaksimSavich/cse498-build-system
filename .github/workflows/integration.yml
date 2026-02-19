@@ -37,8 +37,10 @@ jobs:
     #   - name: Run Tests
     #     run: make test
     runs-on: ubuntu-latest
-    steps:
-      - uses: mymindstorm/setup-emsdk@v14
+    container:
+      image: emscripten/emsdk:3.1.50 # pulled from Docker Hub
 
-      - name: Verify
-        run: emcc -v
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: emmake make
