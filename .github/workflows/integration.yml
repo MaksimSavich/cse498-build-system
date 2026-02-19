@@ -38,14 +38,22 @@ jobs:
     #     run: make test
     runs-on: ubuntu-latest
     steps:
-      - name: Setup Emscripten
-        uses: mymindstorm/setup-emsdk@v14
-        with:
-          version: 3.1.50
-          actions-cache-folder: "emsdk-cache"
-
-      - name: Cache key
+      - name: Cache Emscripten
+        id: cache-emsdk
         uses: actions/cache@v4
         with:
-          path: emsdk-cache
-          key: emsdk-${{ runner.os }}-3.1.50
+          path: ~/emsdk
+          key: emsdk-${{ runner.os }}-3.1.50 # Pin your version here
+
+      - name: Install Emscripten
+        if: steps.cache-emsdk.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git ~/emsdk
+          ~/emsdk/emsdk install 3.1.50
+          ~/emsdk/emsdk activate 3.1.50
+
+      - name: Activate Emscripten
+        run: |
+          source ~/emsdk/emsdk_env.sh
+          echo "EMSDK=$HOME/emsdk" >> $GITHUB_ENV
+          echo "$HOME/emsdk/upstream/emscripten" >> $GITHUB_PATH
