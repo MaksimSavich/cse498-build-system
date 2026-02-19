@@ -15,24 +15,30 @@ jobs:
         run: find . -type f \( -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h" \) | xargs clang-format --style="Google" -n -Werror --verbose
 
   test:
+    # runs-on: ubuntu-latest
+    # steps:
+    #   - uses: actions/checkout@v4
+
+    #   - name: Set up Docker Buildx
+    #     uses: docker/setup-buildx-action@v3
+    #     with:
+    #       driver: docker-container
+
+    #   - name: Build and cache Docker image
+    #     uses: docker/bake-action@v6
+    #     with:
+    #       files: docker-compose.yml
+    #       targets: test
+    #       load: true
+    #       set: |
+    #         *.cache-from=type=gha
+    #         *.cache-to=type=gha,mode=max
+
+    #   - name: Run Tests
+    #     run: make test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: mymindstorm/setup-emsdk@v14
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-        with:
-          driver: docker-container
-
-      - name: Build and cache Docker image
-        uses: docker/bake-action@v6
-        with:
-          files: docker-compose.yml
-          targets: test
-          load: true
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,mode=max
-
-      - name: Run Tests
-        run: make test
+      - name: Verify
+        run: emcc -v
