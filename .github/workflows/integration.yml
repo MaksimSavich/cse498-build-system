@@ -57,3 +57,4 @@ jobs:
           source ~/emsdk/emsdk_env.sh
           echo "EMSDK=$HOME/emsdk" >> $GITHUB_ENV
           echo "$HOME/emsdk/upstream/emscripten" >> $GITHUB_PATH
+          # test
