@@ -43,18 +43,17 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/emsdk
-          key: emsdk-${{ runner.os }}-3.1.50 # Pin your version here
+          key: emsdk-${{ runner.os }}-5.0.0
 
       - name: Install Emscripten
         if: steps.cache-emsdk.outputs.cache-hit != 'true'
         run: |
           git clone https://github.com/emscripten-core/emsdk.git ~/emsdk
-          ~/emsdk/emsdk install 3.1.50
-          ~/emsdk/emsdk activate 3.1.50
+          ~/emsdk/emsdk install 5.0.0
+          ~/emsdk/emsdk activate 5.0.0
 
       - name: Activate Emscripten
         run: |
           source ~/emsdk/emsdk_env.sh
           echo "EMSDK=$HOME/emsdk" >> $GITHUB_ENV
           echo "$HOME/emsdk/upstream/emscripten" >> $GITHUB_PATH
-          # test
