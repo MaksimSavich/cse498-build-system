@@ -15,24 +15,45 @@ jobs:
         run: find . -type f \( -name "*.cpp" -o -name "*.hpp" -o -name "*.c" -o -name "*.h" \) | xargs clang-format --style="Google" -n -Werror --verbose
 
   test:
+    # runs-on: ubuntu-latest
+    # steps:
+    #   - uses: actions/checkout@v4
+
+    #   - name: Set up Docker Buildx
+    #     uses: docker/setup-buildx-action@v3
+    #     with:
+    #       driver: docker-container
+
+    #   - name: Build and cache Docker image
+    #     uses: docker/bake-action@v6
+    #     with:
+    #       files: docker-compose.yml
+    #       targets: test
+    #       load: true
+    #       set: |
+    #         *.cache-from=type=gha
+    #         *.cache-to=type=gha,mode=max
+
+    #   - name: Run Tests
+    #     run: make test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Cache Emscripten
+        id: cache-emsdk
+        uses: actions/cache@v4
         with:
-          driver: docker-container
+          path: ~/emsdk
+          key: emsdk-${{ runner.os }}-5.0.0
 
-      - name: Build and cache Docker image
-        uses: docker/bake-action@v6
-        with:
-          files: docker-compose.yml
-          targets: test
-          load: true
-          set: |
-            *.cache-from=type=gha
-            *.cache-to=type=gha,mode=max
+      - name: Install Emscripten
+        if: steps.cache-emsdk.outputs.cache-hit != 'true'
+        run: |
+          git clone https://github.com/emscripten-core/emsdk.git ~/emsdk
+          ~/emsdk/emsdk install 5.0.0
+          ~/emsdk/emsdk activate 5.0.0
 
-      - name: Run Tests
-        run: make test
+      - name: Activate Emscripten
+        run: |
+          source ~/emsdk/emsdk_env.sh
+          echo "EMSDK=$HOME/emsdk" >> $GITHUB_ENV
+          echo "$HOME/emsdk/upstream/emscripten" >> $GITHUB_PATH
